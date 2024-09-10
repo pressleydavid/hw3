@@ -1,0 +1,43 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+load("hw2_list.rda")
+```
+
+```{r}
+
+```
+
+### create a nested List from df_names as levels/parent and numeric vars and sumstats
+```{r}
+
+attributes(bp_list)
+typeof(bp_list)
+str(bp_list)
+
+get_df_names <- function(bp_list, stat = "mean"){
+    stat__ <- get(stat)
+    df_names <- list()
+    for(item in names(bp_list)){
+        df_names <- append(df_names, item)
+        numeric_var_names <- list()
+        df_stats <- list()
+        for (j in bp_list){
+            numeric_var_names <- append(numeric_var_names,(names(j)[sapply(j,is.numeric)]))
+            df_stats <- append(df_stats, list(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp)))
+        }
+    } 
+    return(list(df_names, numeric_var_names, df_stats))
+}
+dfnamestst <- get_df_names(bp_list)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
