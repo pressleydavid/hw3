@@ -8,8 +8,59 @@ load("hw2_list.rda")
 ```
 
 ```{r}
-
+calculate_stats <- function(bp_list, stat = "mean") {
+    #get `stat` param from function
+    stat_arg <- get(stat)
+    
+    #initialize return list
+    sumstats <- list()
+    
+    # get names
+    for (i in names(bp_list)) {
+        df <- bp_list[[i]]
+        by_trt_stats <-c()
+        
+        # get numeric columns
+        num_vars <- names(df)[sapply(df, is.numeric)]
+        
+        # calculate stats for numeric variables
+        for (j in num_vars) {
+            col_stat <- stat_arg(df[[j]])
+            stat_name <- paste(stat, j, sep = "_")
+            by_trt_stats[stat_name] <- col_stat
+        }
+        
+        # store vector in the list by group name
+        sumstats[[i]] <- as.data.frame(t(by_trt_stats))
+    }
+    
+    # return list of data frames
+    return(sumstats)
+}
+tst_mean_def<-calculate_stats(bp_list)
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### create a nested List from df_names as levels/parent and numeric vars and sumstats
 ```{r}
@@ -17,27 +68,128 @@ load("hw2_list.rda")
 attributes(bp_list)
 typeof(bp_list)
 str(bp_list)
+summary(bp_list) # bp_List is a list containing 2 data frames
+is.vector(bp_list)
+is.data.frame(bp_list[[1]])
+names(bp_list)
 
 get_df_names <- function(bp_list, stat = "mean"){
     stat__ <- get(stat)
     df_names <- list()
+    return_list <- list()
     for(item in names(bp_list)){
-        df_names <- append(df_names, item)
-        numeric_var_names <- list()
-        df_stats <- list()
+        df_names <- item
+        numeric_var_names <- vector()
+        df_stats <- vector()
         for (j in bp_list){
-            numeric_var_names <- append(numeric_var_names,(names(j)[sapply(j,is.numeric)]))
-            df_stats <- append(df_stats, list(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp)))
+            numeric_var_names <- (names(j)[sapply(j,is.numeric)])
+            df_stats <- c(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp))
         }
-    } 
-    return(list(df_names, numeric_var_names, df_stats))
+        return_list <- append(return_list, list(df_names, numeric_var_names, df_stats))
+    }
+    
+    return(return_list)
 }
 dfnamestst <- get_df_names(bp_list)
 ```
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+### Just create the 6 element list, but provide names for each stat in the list
+```{r}
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+hobbies <- c("reading", "hiking", "coding")
+hobby_string <- paste(hobbies, collapse = "_")
+print(hobby_string) # Output: "reading, hiking, coding"
+
+get_var_string <- function(bp_list, stat = "mean"){
+    stat__ <- get(stat)
+    df_names <- names(bp_list)
+    
+    return_df <- data.frame()
+    
+    for(i in seq_along(bp_list)){
+        df_stats <- c()
+        df <- bp_list[[i]]
+        df_name <- df_names[i]
+        
+        num_vars <- names(df)[sapply(df, is.numeric)]
+        
+        # df_stats <- c(stat__(i$pre_bp), stat__(i$post_bp), stat__(i$diff_bp))
+        
+        for(col in num_vars){
+            col_stat <- stat__(df[[col]])
+            print(col_stat)
+            var_string <- paste(df_name, col, sep= "_")
+            df_stats <- append(df_stats, col_stat)
+        }
+        return_df <- rbind(return_df,col_stat)
+    }
+    return(return_df)
+}
+x <- get_var_string(bp_list)
+
+
+create_named_list <- function(bp_list, stat = "mean"){
+    stat__ <- get(stat)
+    var_string <- vector()
+    for(i in bp_list){
+        var_string <- vector()
+        var_string <- paste((names(i)[sapply(i,is.numeric)]), sep = "_")
+        print(var_string)
+    }
+    
+    
+}
+x2 <- create_named_list(bp_list)
+
+# get_df_names <- function(bp_list, stat = "mean"){
+#     stat__ <- get(stat)
+#     df_names <- list()
+#     return_list <- list()
+#     for(item in names(bp_list)){
+#         df_names <- item
+#         numeric_var_names <- vector()
+#         df_stats <- vector()
+#         for (j in bp_list){
+#             numeric_var_names <- (names(j)[sapply(j,is.numeric)])
+#             df_stats <- c(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp))
+#         }
+#         return_list <- append(return_list, list(df_names, numeric_var_names, df_stats))
+#     }
+#     
+#     return(return_list)
+# }
+# dfnamestst <- get_df_names(bp_list)
+```
+### What am I trying to do?
+- iterate through a list of dataframes (bp_list), extracting:
+    - names of dataframes ("treatment" and "placebo")
+    - names of numeric variables
+- summarize numeric columns
+- label the things to make sense
+- return output across trt, pbo
+- return a list of dataframes containing summary stats for numeric columns
+    - dataframes for treatment regimen (trt, pbo)
+        - meaningfully labeled? 
+        
+### What is the issue?
+- flow control. I really hate nesting for loops if there is a faster alternative (I don't know it)
+
+- addressing elements of:
+    - lists
+    - dataframes inside of lists
+```{r}
+names(bp_list)
+bp_list[[1]]
+bp_list[1] #don't use these
+bp_list$treatment #don't use these
+length(bp_list)
+
+for (item in bp_list){
+    #R just knows bp_list is a list of 2 items
+    # print(bp_list[item]) #why doesn't this return $treatment like it does above?
+    print(item) #why does this give an invalid subscript for type 'list' error
+    # print(bp_list$item) #why does this return NULL, when outside of a loop it returns a dataframe?
+}
+```
 

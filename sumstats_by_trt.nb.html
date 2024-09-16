@@ -1766,6 +1766,38 @@ Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection</code><
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2FsY3VsYXRlX3N0YXRzIDwtIGZ1bmN0aW9uKGJwX2xpc3QsIHN0YXQgPSBcIm1lYW5cIikge1xuICAgICNnZXQgYHN0YXRgIHBhcmFtIGZyb20gZnVuY3Rpb25cbiAgICBzdGF0X2FyZyA8LSBnZXQoc3RhdClcbiAgICBcbiAgICAjaW5pdGlhbGl6ZSByZXR1cm4gbGlzdFxuICAgIHN1bXN0YXRzIDwtIGxpc3QoKVxuICAgIFxuICAgICMgZ2V0IG5hbWVzXG4gICAgZm9yIChpIGluIG5hbWVzKGJwX2xpc3QpKSB7XG4gICAgICAgIGRmIDwtIGJwX2xpc3RbW2ldXVxuICAgICAgICBieV90cnRfc3RhdHMgPC1jKClcbiAgICAgICAgXG4gICAgICAgICMgZ2V0IG51bWVyaWMgY29sdW1uc1xuICAgICAgICBudW1fdmFycyA8LSBuYW1lcyhkZilbc2FwcGx5KGRmLCBpcy5udW1lcmljKV1cbiAgICAgICAgXG4gICAgICAgICMgY2FsY3VsYXRlIHN0YXRzIGZvciBudW1lcmljIHZhcmlhYmxlc1xuICAgICAgICBmb3IgKGogaW4gbnVtX3ZhcnMpIHtcbiAgICAgICAgICAgIGNvbF9zdGF0IDwtIHN0YXRfYXJnKGRmW1tqXV0pXG4gICAgICAgICAgICBzdGF0X25hbWUgPC0gcGFzdGUoc3RhdCwgaiwgc2VwID0gXCJfXCIpXG4gICAgICAgICAgICBieV90cnRfc3RhdHNbc3RhdF9uYW1lXSA8LSBjb2xfc3RhdFxuICAgICAgICB9XG4gICAgICAgIFxuICAgICAgICAjIHN0b3JlIHZlY3RvciBpbiB0aGUgbGlzdCBieSBncm91cCBuYW1lXG4gICAgICAgIHN1bXN0YXRzW1tpXV0gPC0gYXMuZGF0YS5mcmFtZSh0KGJ5X3RydF9zdGF0cykpXG4gICAgfVxuICAgIFxuICAgICMgcmV0dXJuIGxpc3Qgb2YgZGF0YSBmcmFtZXNcbiAgICByZXR1cm4oc3Vtc3RhdHMpXG59XG50c3RfbWVhbl9kZWY8LWNhbGN1bGF0ZV9zdGF0cyhicF9saXN0KVxuYGBgIn0= -->
+<pre class="r"><code>calculate_stats &lt;- function(bp_list, stat = &quot;mean&quot;) {
+    #get `stat` param from function
+    stat_arg &lt;- get(stat)
+    
+    #initialize return list
+    sumstats &lt;- list()
+    
+    # get names
+    for (i in names(bp_list)) {
+        df &lt;- bp_list[[i]]
+        by_trt_stats &lt;-c()
+        
+        # get numeric columns
+        num_vars &lt;- names(df)[sapply(df, is.numeric)]
+        
+        # calculate stats for numeric variables
+        for (j in num_vars) {
+            col_stat &lt;- stat_arg(df[[j]])
+            stat_name &lt;- paste(stat, j, sep = &quot;_&quot;)
+            by_trt_stats[stat_name] &lt;- col_stat
+        }
+        
+        # store vector in the list by group name
+        sumstats[[i]] &lt;- as.data.frame(t(by_trt_stats))
+    }
+    
+    # return list of data frames
+    return(sumstats)
+}
+tst_mean_def&lt;-calculate_stats(bp_list)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <div id="create-a-nested-list-from-df_names-as-levelsparent-and-numeric-vars-and-sumstats" class="section level3">
@@ -1773,43 +1805,166 @@ Error in readChar(con, 5L, useBytes = TRUE) : cannot open the connection</code><
 and sumstats</h3>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5hdHRyaWJ1dGVzKGJwX2xpc3QpXG50eXBlb2YoYnBfbGlzdClcbnN0cihicF9saXN0KVxuXG5nZXRfZGZfbmFtZXMgPC0gZnVuY3Rpb24oYnBfbGlzdCwgc3RhdCA9IFwibWVhblwiKXtcbiAgICBzdGF0X18gPC0gZ2V0KHN0YXQpXG4gICAgZGZfbmFtZXMgPC0gbGlzdCgpXG4gICAgZm9yKGl0ZW0gaW4gbmFtZXMoYnBfbGlzdCkpe1xuICAgICAgICBkZl9uYW1lcyA8LSBhcHBlbmQoZGZfbmFtZXMsIGl0ZW0pXG4gICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIGxpc3QoKVxuICAgICAgICBkZl9zdGF0cyA8LSBsaXN0KClcbiAgICAgICAgZm9yIChqIGluIGJwX2xpc3Qpe1xuICAgICAgICAgICAgbnVtZXJpY192YXJfbmFtZXMgPC0gYXBwZW5kKG51bWVyaWNfdmFyX25hbWVzLChuYW1lcyhqKVtzYXBwbHkoaixpcy5udW1lcmljKV0pKVxuICAgICAgICAgICAgZGZfc3RhdHMgPC0gYXBwZW5kKGRmX3N0YXRzLCBsaXN0KHN0YXRfXyhqJHByZV9icCksIHN0YXRfXyhqJHBvc3RfYnApLCBzdGF0X18oaiRkaWZmX2JwKSkpXG4gICAgICAgIH1cbiAgICB9IFxuICAgIHJldHVybihsaXN0KGRmX25hbWVzLCBudW1lcmljX3Zhcl9uYW1lcywgZGZfc3RhdHMpKVxufVxuZGZuYW1lc3RzdCA8LSBnZXRfZGZfbmFtZXMoYnBfbGlzdClcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5hdHRyaWJ1dGVzKGJwX2xpc3QpXG50eXBlb2YoYnBfbGlzdClcbnN0cihicF9saXN0KVxuc3VtbWFyeShicF9saXN0KSAjIGJwX0xpc3QgaXMgYSBsaXN0IGNvbnRhaW5pbmcgMiBkYXRhIGZyYW1lc1xuaXMudmVjdG9yKGJwX2xpc3QpXG5pcy5kYXRhLmZyYW1lKGJwX2xpc3RbWzFdXSlcbm5hbWVzKGJwX2xpc3QpXG5cbmdldF9kZl9uYW1lcyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gXCJtZWFuXCIpe1xuICAgIHN0YXRfXyA8LSBnZXQoc3RhdClcbiAgICBkZl9uYW1lcyA8LSBsaXN0KClcbiAgICByZXR1cm5fbGlzdCA8LSBsaXN0KClcbiAgICBmb3IoaXRlbSBpbiBuYW1lcyhicF9saXN0KSl7XG4gICAgICAgIGRmX25hbWVzIDwtIGl0ZW1cbiAgICAgICAgbnVtZXJpY192YXJfbmFtZXMgPC0gdmVjdG9yKClcbiAgICAgICAgZGZfc3RhdHMgPC0gdmVjdG9yKClcbiAgICAgICAgZm9yIChqIGluIGJwX2xpc3Qpe1xuICAgICAgICAgICAgbnVtZXJpY192YXJfbmFtZXMgPC0gKG5hbWVzKGopW3NhcHBseShqLGlzLm51bWVyaWMpXSlcbiAgICAgICAgICAgIGRmX3N0YXRzIDwtIGMoc3RhdF9fKGokcHJlX2JwKSwgc3RhdF9fKGokcG9zdF9icCksIHN0YXRfXyhqJGRpZmZfYnApKVxuICAgICAgICB9XG4gICAgICAgIHJldHVybl9saXN0IDwtIGFwcGVuZChyZXR1cm5fbGlzdCwgbGlzdChkZl9uYW1lcywgbnVtZXJpY192YXJfbmFtZXMsIGRmX3N0YXRzKSlcbiAgICB9XG4gICAgXG4gICAgcmV0dXJuKHJldHVybl9saXN0KVxufVxuZGZuYW1lc3RzdCA8LSBnZXRfZGZfbmFtZXMoYnBfbGlzdClcbmBgYCJ9 -->
 <pre class="r"><code>
 attributes(bp_list)
 typeof(bp_list)
 str(bp_list)
+summary(bp_list) # bp_List is a list containing 2 data frames
+is.vector(bp_list)
+is.data.frame(bp_list[[1]])
+names(bp_list)
 
 get_df_names &lt;- function(bp_list, stat = &quot;mean&quot;){
     stat__ &lt;- get(stat)
     df_names &lt;- list()
+    return_list &lt;- list()
     for(item in names(bp_list)){
-        df_names &lt;- append(df_names, item)
-        numeric_var_names &lt;- list()
-        df_stats &lt;- list()
+        df_names &lt;- item
+        numeric_var_names &lt;- vector()
+        df_stats &lt;- vector()
         for (j in bp_list){
-            numeric_var_names &lt;- append(numeric_var_names,(names(j)[sapply(j,is.numeric)]))
-            df_stats &lt;- append(df_stats, list(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp)))
+            numeric_var_names &lt;- (names(j)[sapply(j,is.numeric)])
+            df_stats &lt;- c(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp))
         }
-    } 
-    return(list(df_names, numeric_var_names, df_stats))
+        return_list &lt;- append(return_list, list(df_names, numeric_var_names, df_stats))
+    }
+    
+    return(return_list)
 }
 dfnamestst &lt;- get_df_names(bp_list)</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the
-toolbar or by pressing <em>Cmd+Option+I</em>.</p>
-<p>When you save the notebook, an HTML file containing the code and
-output will be saved alongside it (click the <em>Preview</em> button or
-press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
-<p>The preview shows you a rendered HTML copy of the contents of the
-editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not
-run any R code chunks. Instead, the output of the chunk when it was last
-run in the editor is displayed.</p>
+</div>
+<div id="just-create-the-6-element-list-but-provide-names-for-each-stat-in-the-list" class="section level3">
+<h3>Just create the 6 element list, but provide names for each stat in
+the list</h3>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5ob2JiaWVzIDwtIGMoXCJyZWFkaW5nXCIsIFwiaGlraW5nXCIsIFwiY29kaW5nXCIpXG5ob2JieV9zdHJpbmcgPC0gcGFzdGUoaG9iYmllcywgY29sbGFwc2UgPSBcIl9cIilcbnByaW50KGhvYmJ5X3N0cmluZykgIyBPdXRwdXQ6IFwicmVhZGluZywgaGlraW5nLCBjb2RpbmdcIlxuXG5nZXRfdmFyX3N0cmluZyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gXCJtZWFuXCIpe1xuICAgIHN0YXRfXyA8LSBnZXQoc3RhdClcbiAgICBkZl9uYW1lcyA8LSBuYW1lcyhicF9saXN0KVxuICAgIFxuICAgIHJldHVybl9kZiA8LSBkYXRhLmZyYW1lKClcbiAgICBcbiAgICBmb3IoaSBpbiBzZXFfYWxvbmcoYnBfbGlzdCkpe1xuICAgICAgICBkZl9zdGF0cyA8LSBjKClcbiAgICAgICAgZGYgPC0gYnBfbGlzdFtbaV1dXG4gICAgICAgIGRmX25hbWUgPC0gZGZfbmFtZXNbaV1cbiAgICAgICAgXG4gICAgICAgIG51bV92YXJzIDwtIG5hbWVzKGRmKVtzYXBwbHkoZGYsIGlzLm51bWVyaWMpXVxuICAgICAgICBcbiAgICAgICAgIyBkZl9zdGF0cyA8LSBjKHN0YXRfXyhpJHByZV9icCksIHN0YXRfXyhpJHBvc3RfYnApLCBzdGF0X18oaSRkaWZmX2JwKSlcbiAgICAgICAgXG4gICAgICAgIGZvcihjb2wgaW4gbnVtX3ZhcnMpe1xuICAgICAgICAgICAgY29sX3N0YXQgPC0gc3RhdF9fKGRmW1tjb2xdXSlcbiAgICAgICAgICAgIHByaW50KGNvbF9zdGF0KVxuICAgICAgICAgICAgdmFyX3N0cmluZyA8LSBwYXN0ZShkZl9uYW1lLCBjb2wsIHNlcD0gXCJfXCIpXG4gICAgICAgICAgICBkZl9zdGF0cyA8LSBhcHBlbmQoZGZfc3RhdHMsIGNvbF9zdGF0KVxuICAgICAgICB9XG4gICAgICAgIHJldHVybl9kZiA8LSByYmluZChyZXR1cm5fZGYsY29sX3N0YXQpXG4gICAgfVxuICAgIHJldHVybihyZXR1cm5fZGYpXG59XG54IDwtIGdldF92YXJfc3RyaW5nKGJwX2xpc3QpXG5cblxuY3JlYXRlX25hbWVkX2xpc3QgPC0gZnVuY3Rpb24oYnBfbGlzdCwgc3RhdCA9IFwibWVhblwiKXtcbiAgICBzdGF0X18gPC0gZ2V0KHN0YXQpXG4gICAgdmFyX3N0cmluZyA8LSB2ZWN0b3IoKVxuICAgIGZvcihpIGluIGJwX2xpc3Qpe1xuICAgICAgICB2YXJfc3RyaW5nIDwtIHZlY3RvcigpXG4gICAgICAgIHZhcl9zdHJpbmcgPC0gcGFzdGUoKG5hbWVzKGkpW3NhcHBseShpLGlzLm51bWVyaWMpXSksIHNlcCA9IFwiX1wiKVxuICAgICAgICBwcmludCh2YXJfc3RyaW5nKVxuICAgIH1cbiAgICBcbiAgICBcbn1cbngyIDwtIGNyZWF0ZV9uYW1lZF9saXN0KGJwX2xpc3QpXG5cbiMgZ2V0X2RmX25hbWVzIDwtIGZ1bmN0aW9uKGJwX2xpc3QsIHN0YXQgPSBcIm1lYW5cIil7XG4jICAgICBzdGF0X18gPC0gZ2V0KHN0YXQpXG4jICAgICBkZl9uYW1lcyA8LSBsaXN0KClcbiMgICAgIHJldHVybl9saXN0IDwtIGxpc3QoKVxuIyAgICAgZm9yKGl0ZW0gaW4gbmFtZXMoYnBfbGlzdCkpe1xuIyAgICAgICAgIGRmX25hbWVzIDwtIGl0ZW1cbiMgICAgICAgICBudW1lcmljX3Zhcl9uYW1lcyA8LSB2ZWN0b3IoKVxuIyAgICAgICAgIGRmX3N0YXRzIDwtIHZlY3RvcigpXG4jICAgICAgICAgZm9yIChqIGluIGJwX2xpc3Qpe1xuIyAgICAgICAgICAgICBudW1lcmljX3Zhcl9uYW1lcyA8LSAobmFtZXMoailbc2FwcGx5KGosaXMubnVtZXJpYyldKVxuIyAgICAgICAgICAgICBkZl9zdGF0cyA8LSBjKHN0YXRfXyhqJHByZV9icCksIHN0YXRfXyhqJHBvc3RfYnApLCBzdGF0X18oaiRkaWZmX2JwKSlcbiMgICAgICAgICB9XG4jICAgICAgICAgcmV0dXJuX2xpc3QgPC0gYXBwZW5kKHJldHVybl9saXN0LCBsaXN0KGRmX25hbWVzLCBudW1lcmljX3Zhcl9uYW1lcywgZGZfc3RhdHMpKVxuIyAgICAgfVxuIyAgICAgXG4jICAgICByZXR1cm4ocmV0dXJuX2xpc3QpXG4jIH1cbiMgZGZuYW1lc3RzdCA8LSBnZXRfZGZfbmFtZXMoYnBfbGlzdClcbmBgYCJ9 -->
+<pre class="r"><code>
+hobbies &lt;- c(&quot;reading&quot;, &quot;hiking&quot;, &quot;coding&quot;)
+hobby_string &lt;- paste(hobbies, collapse = &quot;_&quot;)
+print(hobby_string) # Output: &quot;reading, hiking, coding&quot;
+
+get_var_string &lt;- function(bp_list, stat = &quot;mean&quot;){
+    stat__ &lt;- get(stat)
+    df_names &lt;- names(bp_list)
+    
+    return_df &lt;- data.frame()
+    
+    for(i in seq_along(bp_list)){
+        df_stats &lt;- c()
+        df &lt;- bp_list[[i]]
+        df_name &lt;- df_names[i]
+        
+        num_vars &lt;- names(df)[sapply(df, is.numeric)]
+        
+        # df_stats &lt;- c(stat__(i$pre_bp), stat__(i$post_bp), stat__(i$diff_bp))
+        
+        for(col in num_vars){
+            col_stat &lt;- stat__(df[[col]])
+            print(col_stat)
+            var_string &lt;- paste(df_name, col, sep= &quot;_&quot;)
+            df_stats &lt;- append(df_stats, col_stat)
+        }
+        return_df &lt;- rbind(return_df,col_stat)
+    }
+    return(return_df)
+}
+x &lt;- get_var_string(bp_list)
+
+
+create_named_list &lt;- function(bp_list, stat = &quot;mean&quot;){
+    stat__ &lt;- get(stat)
+    var_string &lt;- vector()
+    for(i in bp_list){
+        var_string &lt;- vector()
+        var_string &lt;- paste((names(i)[sapply(i,is.numeric)]), sep = &quot;_&quot;)
+        print(var_string)
+    }
+    
+    
+}
+x2 &lt;- create_named_list(bp_list)
+
+# get_df_names &lt;- function(bp_list, stat = &quot;mean&quot;){
+#     stat__ &lt;- get(stat)
+#     df_names &lt;- list()
+#     return_list &lt;- list()
+#     for(item in names(bp_list)){
+#         df_names &lt;- item
+#         numeric_var_names &lt;- vector()
+#         df_stats &lt;- vector()
+#         for (j in bp_list){
+#             numeric_var_names &lt;- (names(j)[sapply(j,is.numeric)])
+#             df_stats &lt;- c(stat__(j$pre_bp), stat__(j$post_bp), stat__(j$diff_bp))
+#         }
+#         return_list &lt;- append(return_list, list(df_names, numeric_var_names, df_stats))
+#     }
+#     
+#     return(return_list)
+# }
+# dfnamestst &lt;- get_df_names(bp_list)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="what-am-i-trying-to-do" class="section level3">
+<h3>What am I trying to do?</h3>
+<ul>
+<li>iterate through a list of dataframes (bp_list), extracting:
+<ul>
+<li>names of dataframes (“treatment” and “placebo”)</li>
+<li>names of numeric variables</li>
+</ul></li>
+<li>summarize numeric columns</li>
+<li>label the things to make sense</li>
+<li>return output across trt, pbo</li>
+<li>return a list of dataframes containing summary stats for numeric
+columns
+<ul>
+<li>dataframes for treatment regimen (trt, pbo)
+<ul>
+<li>meaningfully labeled?</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="what-is-the-issue" class="section level3">
+<h3>What is the issue?</h3>
+<ul>
+<li><p>flow control. I really hate nesting for loops if there is a
+faster alternative (I don’t know it)</p></li>
+<li><p>addressing elements of:</p>
+<ul>
+<li>lists</li>
+<li>dataframes inside of lists</li>
+</ul></li>
+</ul>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmFtZXMoYnBfbGlzdClcbmJwX2xpc3RbWzFdXVxuYnBfbGlzdFsxXSAjZG9uJ3QgdXNlIHRoZXNlXG5icF9saXN0JHRyZWF0bWVudCAjZG9uJ3QgdXNlIHRoZXNlXG5sZW5ndGgoYnBfbGlzdClcblxuZm9yIChpdGVtIGluIGJwX2xpc3Qpe1xuICAgICNSIGp1c3Qga25vd3MgYnBfbGlzdCBpcyBhIGxpc3Qgb2YgMiBpdGVtc1xuICAgICMgcHJpbnQoYnBfbGlzdFtpdGVtXSkgI3doeSBkb2Vzbid0IHRoaXMgcmV0dXJuICR0cmVhdG1lbnQgbGlrZSBpdCBkb2VzIGFib3ZlP1xuICAgIHByaW50KGl0ZW0pICN3aHkgZG9lcyB0aGlzIGdpdmUgYW4gaW52YWxpZCBzdWJzY3JpcHQgZm9yIHR5cGUgJ2xpc3QnIGVycm9yXG4gICAgIyBwcmludChicF9saXN0JGl0ZW0pICN3aHkgZG9lcyB0aGlzIHJldHVybiBOVUxMLCB3aGVuIG91dHNpZGUgb2YgYSBsb29wIGl0IHJldHVybnMgYSBkYXRhZnJhbWU/XG59XG5gYGAifQ== -->
+<pre class="r"><code>names(bp_list)
+bp_list[[1]]
+bp_list[1] #don&#39;t use these
+bp_list$treatment #don&#39;t use these
+length(bp_list)
+
+for (item in bp_list){
+    #R just knows bp_list is a list of 2 items
+    # print(bp_list[item]) #why doesn&#39;t this return $treatment like it does above?
+    print(item) #why does this give an invalid subscript for type &#39;list&#39; error
+    # print(bp_list$item) #why does this return NULL, when outside of a loop it returns a dataframe?
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3J9CmxvYWQoImh3Ml9saXN0LnJkYSIpCmBgYAoKYGBge3J9CgpgYGAKCiMjIyBjcmVhdGUgYSBuZXN0ZWQgTGlzdCBmcm9tIGRmX25hbWVzIGFzIGxldmVscy9wYXJlbnQgYW5kIG51bWVyaWMgdmFycyBhbmQgc3Vtc3RhdHMKYGBge3J9CgphdHRyaWJ1dGVzKGJwX2xpc3QpCnR5cGVvZihicF9saXN0KQpzdHIoYnBfbGlzdCkKCmdldF9kZl9uYW1lcyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gIm1lYW4iKXsKICAgIHN0YXRfXyA8LSBnZXQoc3RhdCkKICAgIGRmX25hbWVzIDwtIGxpc3QoKQogICAgZm9yKGl0ZW0gaW4gbmFtZXMoYnBfbGlzdCkpewogICAgICAgIGRmX25hbWVzIDwtIGFwcGVuZChkZl9uYW1lcywgaXRlbSkKICAgICAgICBudW1lcmljX3Zhcl9uYW1lcyA8LSBsaXN0KCkKICAgICAgICBkZl9zdGF0cyA8LSBsaXN0KCkKICAgICAgICBmb3IgKGogaW4gYnBfbGlzdCl7CiAgICAgICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIGFwcGVuZChudW1lcmljX3Zhcl9uYW1lcywobmFtZXMoailbc2FwcGx5KGosaXMubnVtZXJpYyldKSkKICAgICAgICAgICAgZGZfc3RhdHMgPC0gYXBwZW5kKGRmX3N0YXRzLCBsaXN0KHN0YXRfXyhqJHByZV9icCksIHN0YXRfXyhqJHBvc3RfYnApLCBzdGF0X18oaiRkaWZmX2JwKSkpCiAgICAgICAgfQogICAgfSAKICAgIHJldHVybihsaXN0KGRmX25hbWVzLCBudW1lcmljX3Zhcl9uYW1lcywgZGZfc3RhdHMpKQp9CmRmbmFtZXN0c3QgPC0gZ2V0X2RmX25hbWVzKGJwX2xpc3QpCmBgYAoKQWRkIGEgbmV3IGNodW5rIGJ5IGNsaWNraW5nIHRoZSAqSW5zZXJ0IENodW5rKiBidXR0b24gb24gdGhlIHRvb2xiYXIgb3IgYnkgcHJlc3NpbmcgKkNtZCtPcHRpb24rSSouCgpXaGVuIHlvdSBzYXZlIHRoZSBub3RlYm9vaywgYW4gSFRNTCBmaWxlIGNvbnRhaW5pbmcgdGhlIGNvZGUgYW5kIG91dHB1dCB3aWxsIGJlIHNhdmVkIGFsb25nc2lkZSBpdCAoY2xpY2sgdGhlICpQcmV2aWV3KiBidXR0b24gb3IgcHJlc3MgKkNtZCtTaGlmdCtLKiB0byBwcmV2aWV3IHRoZSBIVE1MIGZpbGUpLiAKClRoZSBwcmV2aWV3IHNob3dzIHlvdSBhIHJlbmRlcmVkIEhUTUwgY29weSBvZiB0aGUgY29udGVudHMgb2YgdGhlIGVkaXRvci4gQ29uc2VxdWVudGx5LCB1bmxpa2UgKktuaXQqLCAqUHJldmlldyogZG9lcyBub3QgcnVuIGFueSBSIGNvZGUgY2h1bmtzLiBJbnN0ZWFkLCB0aGUgb3V0cHV0IG9mIHRoZSBjaHVuayB3aGVuIGl0IHdhcyBsYXN0IHJ1biBpbiB0aGUgZWRpdG9yIGlzIGRpc3BsYXllZC4KCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQoKYGBge3J9CmxvYWQoImh3Ml9saXN0LnJkYSIpCmBgYAoKYGBge3J9CmNhbGN1bGF0ZV9zdGF0cyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gIm1lYW4iKSB7CiAgICAjZ2V0IGBzdGF0YCBwYXJhbSBmcm9tIGZ1bmN0aW9uCiAgICBzdGF0X2FyZyA8LSBnZXQoc3RhdCkKICAgIAogICAgI2luaXRpYWxpemUgcmV0dXJuIGxpc3QKICAgIHN1bXN0YXRzIDwtIGxpc3QoKQogICAgCiAgICAjIGdldCBuYW1lcwogICAgZm9yIChpIGluIG5hbWVzKGJwX2xpc3QpKSB7CiAgICAgICAgZGYgPC0gYnBfbGlzdFtbaV1dCiAgICAgICAgYnlfdHJ0X3N0YXRzIDwtYygpCiAgICAgICAgCiAgICAgICAgIyBnZXQgbnVtZXJpYyBjb2x1bW5zCiAgICAgICAgbnVtX3ZhcnMgPC0gbmFtZXMoZGYpW3NhcHBseShkZiwgaXMubnVtZXJpYyldCiAgICAgICAgCiAgICAgICAgIyBjYWxjdWxhdGUgc3RhdHMgZm9yIG51bWVyaWMgdmFyaWFibGVzCiAgICAgICAgZm9yIChqIGluIG51bV92YXJzKSB7CiAgICAgICAgICAgIGNvbF9zdGF0IDwtIHN0YXRfYXJnKGRmW1tqXV0pCiAgICAgICAgICAgIHN0YXRfbmFtZSA8LSBwYXN0ZShzdGF0LCBqLCBzZXAgPSAiXyIpCiAgICAgICAgICAgIGJ5X3RydF9zdGF0c1tzdGF0X25hbWVdIDwtIGNvbF9zdGF0CiAgICAgICAgfQogICAgICAgIAogICAgICAgICMgc3RvcmUgdmVjdG9yIGluIHRoZSBsaXN0IGJ5IGdyb3VwIG5hbWUKICAgICAgICBzdW1zdGF0c1tbaV1dIDwtIGFzLmRhdGEuZnJhbWUodChieV90cnRfc3RhdHMpKQogICAgfQogICAgCiAgICAjIHJldHVybiBsaXN0IG9mIGRhdGEgZnJhbWVzCiAgICByZXR1cm4oc3Vtc3RhdHMpCn0KdHN0X21lYW5fZGVmPC1jYWxjdWxhdGVfc3RhdHMoYnBfbGlzdCkKYGBgCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKIyMjIGNyZWF0ZSBhIG5lc3RlZCBMaXN0IGZyb20gZGZfbmFtZXMgYXMgbGV2ZWxzL3BhcmVudCBhbmQgbnVtZXJpYyB2YXJzIGFuZCBzdW1zdGF0cwpgYGB7cn0KCmF0dHJpYnV0ZXMoYnBfbGlzdCkKdHlwZW9mKGJwX2xpc3QpCnN0cihicF9saXN0KQpzdW1tYXJ5KGJwX2xpc3QpICMgYnBfTGlzdCBpcyBhIGxpc3QgY29udGFpbmluZyAyIGRhdGEgZnJhbWVzCmlzLnZlY3RvcihicF9saXN0KQppcy5kYXRhLmZyYW1lKGJwX2xpc3RbWzFdXSkKbmFtZXMoYnBfbGlzdCkKCmdldF9kZl9uYW1lcyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gIm1lYW4iKXsKICAgIHN0YXRfXyA8LSBnZXQoc3RhdCkKICAgIGRmX25hbWVzIDwtIGxpc3QoKQogICAgcmV0dXJuX2xpc3QgPC0gbGlzdCgpCiAgICBmb3IoaXRlbSBpbiBuYW1lcyhicF9saXN0KSl7CiAgICAgICAgZGZfbmFtZXMgPC0gaXRlbQogICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIHZlY3RvcigpCiAgICAgICAgZGZfc3RhdHMgPC0gdmVjdG9yKCkKICAgICAgICBmb3IgKGogaW4gYnBfbGlzdCl7CiAgICAgICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIChuYW1lcyhqKVtzYXBwbHkoaixpcy5udW1lcmljKV0pCiAgICAgICAgICAgIGRmX3N0YXRzIDwtIGMoc3RhdF9fKGokcHJlX2JwKSwgc3RhdF9fKGokcG9zdF9icCksIHN0YXRfXyhqJGRpZmZfYnApKQogICAgICAgIH0KICAgICAgICByZXR1cm5fbGlzdCA8LSBhcHBlbmQocmV0dXJuX2xpc3QsIGxpc3QoZGZfbmFtZXMsIG51bWVyaWNfdmFyX25hbWVzLCBkZl9zdGF0cykpCiAgICB9CiAgICAKICAgIHJldHVybihyZXR1cm5fbGlzdCkKfQpkZm5hbWVzdHN0IDwtIGdldF9kZl9uYW1lcyhicF9saXN0KQpgYGAKCgojIyMgSnVzdCBjcmVhdGUgdGhlIDYgZWxlbWVudCBsaXN0LCBidXQgcHJvdmlkZSBuYW1lcyBmb3IgZWFjaCBzdGF0IGluIHRoZSBsaXN0CmBgYHtyfQoKaG9iYmllcyA8LSBjKCJyZWFkaW5nIiwgImhpa2luZyIsICJjb2RpbmciKQpob2JieV9zdHJpbmcgPC0gcGFzdGUoaG9iYmllcywgY29sbGFwc2UgPSAiXyIpCnByaW50KGhvYmJ5X3N0cmluZykgIyBPdXRwdXQ6ICJyZWFkaW5nLCBoaWtpbmcsIGNvZGluZyIKCmdldF92YXJfc3RyaW5nIDwtIGZ1bmN0aW9uKGJwX2xpc3QsIHN0YXQgPSAibWVhbiIpewogICAgc3RhdF9fIDwtIGdldChzdGF0KQogICAgZGZfbmFtZXMgPC0gbmFtZXMoYnBfbGlzdCkKICAgIAogICAgcmV0dXJuX2RmIDwtIGRhdGEuZnJhbWUoKQogICAgCiAgICBmb3IoaSBpbiBzZXFfYWxvbmcoYnBfbGlzdCkpewogICAgICAgIGRmX3N0YXRzIDwtIGMoKQogICAgICAgIGRmIDwtIGJwX2xpc3RbW2ldXQogICAgICAgIGRmX25hbWUgPC0gZGZfbmFtZXNbaV0KICAgICAgICAKICAgICAgICBudW1fdmFycyA8LSBuYW1lcyhkZilbc2FwcGx5KGRmLCBpcy5udW1lcmljKV0KICAgICAgICAKICAgICAgICAjIGRmX3N0YXRzIDwtIGMoc3RhdF9fKGkkcHJlX2JwKSwgc3RhdF9fKGkkcG9zdF9icCksIHN0YXRfXyhpJGRpZmZfYnApKQogICAgICAgIAogICAgICAgIGZvcihjb2wgaW4gbnVtX3ZhcnMpewogICAgICAgICAgICBjb2xfc3RhdCA8LSBzdGF0X18oZGZbW2NvbF1dKQogICAgICAgICAgICBwcmludChjb2xfc3RhdCkKICAgICAgICAgICAgdmFyX3N0cmluZyA8LSBwYXN0ZShkZl9uYW1lLCBjb2wsIHNlcD0gIl8iKQogICAgICAgICAgICBkZl9zdGF0cyA8LSBhcHBlbmQoZGZfc3RhdHMsIGNvbF9zdGF0KQogICAgICAgIH0KICAgICAgICByZXR1cm5fZGYgPC0gcmJpbmQocmV0dXJuX2RmLGNvbF9zdGF0KQogICAgfQogICAgcmV0dXJuKHJldHVybl9kZikKfQp4IDwtIGdldF92YXJfc3RyaW5nKGJwX2xpc3QpCgoKY3JlYXRlX25hbWVkX2xpc3QgPC0gZnVuY3Rpb24oYnBfbGlzdCwgc3RhdCA9ICJtZWFuIil7CiAgICBzdGF0X18gPC0gZ2V0KHN0YXQpCiAgICB2YXJfc3RyaW5nIDwtIHZlY3RvcigpCiAgICBmb3IoaSBpbiBicF9saXN0KXsKICAgICAgICB2YXJfc3RyaW5nIDwtIHZlY3RvcigpCiAgICAgICAgdmFyX3N0cmluZyA8LSBwYXN0ZSgobmFtZXMoaSlbc2FwcGx5KGksaXMubnVtZXJpYyldKSwgc2VwID0gIl8iKQogICAgICAgIHByaW50KHZhcl9zdHJpbmcpCiAgICB9CiAgICAKICAgIAp9CngyIDwtIGNyZWF0ZV9uYW1lZF9saXN0KGJwX2xpc3QpCgojIGdldF9kZl9uYW1lcyA8LSBmdW5jdGlvbihicF9saXN0LCBzdGF0ID0gIm1lYW4iKXsKIyAgICAgc3RhdF9fIDwtIGdldChzdGF0KQojICAgICBkZl9uYW1lcyA8LSBsaXN0KCkKIyAgICAgcmV0dXJuX2xpc3QgPC0gbGlzdCgpCiMgICAgIGZvcihpdGVtIGluIG5hbWVzKGJwX2xpc3QpKXsKIyAgICAgICAgIGRmX25hbWVzIDwtIGl0ZW0KIyAgICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIHZlY3RvcigpCiMgICAgICAgICBkZl9zdGF0cyA8LSB2ZWN0b3IoKQojICAgICAgICAgZm9yIChqIGluIGJwX2xpc3QpewojICAgICAgICAgICAgIG51bWVyaWNfdmFyX25hbWVzIDwtIChuYW1lcyhqKVtzYXBwbHkoaixpcy5udW1lcmljKV0pCiMgICAgICAgICAgICAgZGZfc3RhdHMgPC0gYyhzdGF0X18oaiRwcmVfYnApLCBzdGF0X18oaiRwb3N0X2JwKSwgc3RhdF9fKGokZGlmZl9icCkpCiMgICAgICAgICB9CiMgICAgICAgICByZXR1cm5fbGlzdCA8LSBhcHBlbmQocmV0dXJuX2xpc3QsIGxpc3QoZGZfbmFtZXMsIG51bWVyaWNfdmFyX25hbWVzLCBkZl9zdGF0cykpCiMgICAgIH0KIyAgICAgCiMgICAgIHJldHVybihyZXR1cm5fbGlzdCkKIyB9CiMgZGZuYW1lc3RzdCA8LSBnZXRfZGZfbmFtZXMoYnBfbGlzdCkKYGBgCiMjIyBXaGF0IGFtIEkgdHJ5aW5nIHRvIGRvPwotIGl0ZXJhdGUgdGhyb3VnaCBhIGxpc3Qgb2YgZGF0YWZyYW1lcyAoYnBfbGlzdCksIGV4dHJhY3Rpbmc6CiAgICAtIG5hbWVzIG9mIGRhdGFmcmFtZXMgKCJ0cmVhdG1lbnQiIGFuZCAicGxhY2VibyIpCiAgICAtIG5hbWVzIG9mIG51bWVyaWMgdmFyaWFibGVzCi0gc3VtbWFyaXplIG51bWVyaWMgY29sdW1ucwotIGxhYmVsIHRoZSB0aGluZ3MgdG8gbWFrZSBzZW5zZQotIHJldHVybiBvdXRwdXQgYWNyb3NzIHRydCwgcGJvCi0gcmV0dXJuIGEgbGlzdCBvZiBkYXRhZnJhbWVzIGNvbnRhaW5pbmcgc3VtbWFyeSBzdGF0cyBmb3IgbnVtZXJpYyBjb2x1bW5zCiAgICAtIGRhdGFmcmFtZXMgZm9yIHRyZWF0bWVudCByZWdpbWVuICh0cnQsIHBibykKICAgICAgICAtIG1lYW5pbmdmdWxseSBsYWJlbGVkPyAKICAgICAgICAKIyMjIFdoYXQgaXMgdGhlIGlzc3VlPwotIGZsb3cgY29udHJvbC4gSSByZWFsbHkgaGF0ZSBuZXN0aW5nIGZvciBsb29wcyBpZiB0aGVyZSBpcyBhIGZhc3RlciBhbHRlcm5hdGl2ZSAoSSBkb24ndCBrbm93IGl0KQoKLSBhZGRyZXNzaW5nIGVsZW1lbnRzIG9mOgogICAgLSBsaXN0cwogICAgLSBkYXRhZnJhbWVzIGluc2lkZSBvZiBsaXN0cwpgYGB7cn0KbmFtZXMoYnBfbGlzdCkKYnBfbGlzdFtbMV1dCmJwX2xpc3RbMV0gI2Rvbid0IHVzZSB0aGVzZQpicF9saXN0JHRyZWF0bWVudCAjZG9uJ3QgdXNlIHRoZXNlCmxlbmd0aChicF9saXN0KQoKZm9yIChpdGVtIGluIGJwX2xpc3QpewogICAgI1IganVzdCBrbm93cyBicF9saXN0IGlzIGEgbGlzdCBvZiAyIGl0ZW1zCiAgICAjIHByaW50KGJwX2xpc3RbaXRlbV0pICN3aHkgZG9lc24ndCB0aGlzIHJldHVybiAkdHJlYXRtZW50IGxpa2UgaXQgZG9lcyBhYm92ZT8KICAgIHByaW50KGl0ZW0pICN3aHkgZG9lcyB0aGlzIGdpdmUgYW4gaW52YWxpZCBzdWJzY3JpcHQgZm9yIHR5cGUgJ2xpc3QnIGVycm9yCiAgICAjIHByaW50KGJwX2xpc3QkaXRlbSkgI3doeSBkb2VzIHRoaXMgcmV0dXJuIE5VTEwsIHdoZW4gb3V0c2lkZSBvZiBhIGxvb3AgaXQgcmV0dXJucyBhIGRhdGFmcmFtZT8KfQpgYGAKCg==</div>
 
 
 

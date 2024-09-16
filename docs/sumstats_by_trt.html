@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>hw3.qmd</title>
+<title>R Notebook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -116,7 +116,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">hw3.qmd</h1>
+<h1 class="title">R Notebook</h1>
 </div>
 
 
@@ -133,190 +133,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="setup" class="level1">
-<h1>Setup</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"hw2_list.rda"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="task-1---flow-control" class="level1">
-<h1>Task 1 - Flow Control</h1>
-<section id="create-a-new-column-in-each-data-frame-named-status" class="level2">
-<h2 class="anchored" data-anchor-id="create-a-new-column-in-each-data-frame-named-status">1. Create a new column in each data frame named <code>status</code></h2>
+<section id="create-a-nested-list-from-df_names-as-levelsparent-and-numeric-vars-and-sumstats" class="level3">
+<h3 class="anchored" data-anchor-id="create-a-nested-list-from-df_names-as-levelsparent-and-numeric-vars-and-sumstats">create a nested List from df_names as levels/parent and numeric vars and sumstats</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="st">"treatment"</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">20</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="st">"placebo"</span>]]<span class="sc">$</span>status <span class="ot">&lt;-</span> <span class="fu">character</span>(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="create-status-values-for-each-data-frame" class="level2">
-<h2 class="anchored" data-anchor-id="create-status-values-for-each-data-frame">2. Create status values for each data frame</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#access data frame for brevity</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>trt_df <span class="ot">&lt;-</span> bp_list[[<span class="st">"treatment"</span>]]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#loop through rows</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(trt_df)){</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> trt_df<span class="sc">$</span>post_bp[i]</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(val <span class="sc">&lt;=</span> <span class="dv">120</span>){</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        trt_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"optimal"</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="dv">120</span> <span class="sc">&lt;</span> val <span class="sc">&amp;&amp;</span> val <span class="sc">&lt;=</span> <span class="dv">130</span>){</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        trt_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"borderline"</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(val <span class="sc">&gt;</span> <span class="dv">130</span>){</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        trt_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"high"</span>   </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="st">"KABOOM!"</span>)</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="st">"treatment"</span>]] <span class="ot">&lt;-</span> trt_df</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>pbo_df <span class="ot">&lt;-</span> bp_list[[<span class="st">"placebo"</span>]]</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(pbo_df)){</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    val <span class="ot">&lt;-</span> pbo_df<span class="sc">$</span>post_bp[i]</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(val <span class="sc">&lt;=</span> <span class="dv">120</span>){</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>        pbo_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"optimal"</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="dv">120</span> <span class="sc">&lt;</span> val <span class="sc">&amp;&amp;</span> val <span class="sc">&lt;=</span> <span class="dv">130</span>){</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>        pbo_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"borderline"</span></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(val <span class="sc">&gt;</span> <span class="dv">130</span>){</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>        pbo_df<span class="sc">$</span>status[i] <span class="ot">&lt;-</span> <span class="st">"high"</span>   </span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> {</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">print</span>(<span class="st">"KABOOM!"</span>)</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>bp_list[[<span class="st">"placebo"</span>]] <span class="ot">&lt;-</span> pbo_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-</section>
-<section id="task-2---write-a-function" class="level1">
-<h1>Task 2 - Write a function</h1>
-<ul>
-<li>takes a list containing 2 data frames as an argument. No default values</li>
-<li>takes in an R function that summarizes a numeric column. Default = mean</li>
-<li>finds stat of interest, defined by user input for numeric columns (pre, post, and diff) - use `my_fun &lt;- get(stat) to get function from quoted string</li>
-<li>return values as a named list
-<ul>
-<li>createa vector of names created dynamically based on stat passed</li>
-<li>create vector with actual stat</li>
-<li>assign names() to vector of names</li>
-<li>return List of Data Frames</li>
-</ul></li>
-<li>apply function to list of data frames, without specifying stat
-<ul>
-<li>test against var, sd, min, and max</li>
-</ul></li>
-</ul>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>calculate_stats <span class="ot">&lt;-</span> <span class="cf">function</span>(bp_list, <span class="at">stat =</span> <span class="st">"mean"</span>) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">#get `stat` param from function</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    stat_arg <span class="ot">&lt;-</span> <span class="fu">get</span>(stat)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">#initialize return list</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    sumstats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># get names</span></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">names</span>(bp_list)) {</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        df <span class="ot">&lt;-</span> bp_list[[i]]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        by_trt_stats <span class="ot">&lt;-</span><span class="fu">c</span>()</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="co"># get numeric columns</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        num_vars <span class="ot">&lt;-</span> <span class="fu">names</span>(df)[<span class="fu">sapply</span>(df, is.numeric)]</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="co"># calculate stats for numeric variables</span></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> num_vars) {</span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>            col_stat <span class="ot">&lt;-</span> <span class="fu">stat_arg</span>(df[[j]])</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>            stat_name <span class="ot">&lt;-</span> <span class="fu">paste</span>(stat, j, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>            by_trt_stats[stat_name] <span class="ot">&lt;-</span> col_stat</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>        }</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>        </span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="co"># store vector in the list by group name</span></span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>        sumstats[[i]] <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(<span class="fu">t</span>(by_trt_stats))</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># return list of data frames</span></span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(sumstats)</span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>tst_mean_def<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list)</span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_mean_def)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(bp_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  mean_pre_bp mean_post_bp mean_diff_bp
-1       131.6       125.95         5.65
-
-$placebo
-  mean_pre_bp mean_post_bp mean_diff_bp
-1       131.9        128.9            3</code></pre>
+<pre><code>$names
+[1] "treatment" "placebo"  </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>tst_mean_named<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list,<span class="st">"mean"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_mean_named)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(bp_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  mean_pre_bp mean_post_bp mean_diff_bp
-1       131.6       125.95         5.65
-
-$placebo
-  mean_pre_bp mean_post_bp mean_diff_bp
-1       131.9        128.9            3</code></pre>
+<pre><code>[1] "list"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>tst_sd<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list,<span class="st">"sd"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_sd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(bp_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  sd_pre_bp sd_post_bp sd_diff_bp
-1  8.702087   8.888046   10.85442
-
-$placebo
-  sd_pre_bp sd_post_bp sd_diff_bp
-1  12.24246   11.17984   18.47521</code></pre>
+<pre><code>List of 2
+ $ treatment:'data.frame':  20 obs. of  5 variables:
+  ..$ patient: chr [1:20] "Subject_1" "Subject_2" "Subject_3" "Subject_4" ...
+  ..$ pre_bp : num [1:20] 120 151 125 126 115 132 132 129 134 139 ...
+  ..$ post_bp: num [1:20] 127 145 135 122 115 122 123 126 126 129 ...
+  ..$ diff_bp: num [1:20] -7 6 -10 4 0 10 9 3 8 10 ...
+  ..$ normal : logi [1:20] FALSE FALSE FALSE FALSE TRUE FALSE ...
+ $ placebo  :'data.frame':  10 obs. of  5 variables:
+  ..$ patient: chr [1:10] "Subject_1" "Subject_2" "Subject_3" "Subject_4" ...
+  ..$ pre_bp : num [1:10] 138 135 147 117 152 134 114 121 131 130
+  ..$ post_bp: num [1:10] 105 136 123 130 134 143 135 139 120 124
+  ..$ diff_bp: num [1:10] 33 -1 24 -13 18 -9 -21 -18 11 6
+  ..$ normal : logi [1:10] TRUE FALSE FALSE FALSE FALSE FALSE ...</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tst_min<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list,<span class="st">"min"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_min)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  min_pre_bp min_post_bp min_diff_bp
-1        115         114         -24
-
-$placebo
-  min_pre_bp min_post_bp min_diff_bp
-1        114         105         -21</code></pre>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>get_df_names <span class="ot">&lt;-</span> <span class="cf">function</span>(bp_list, <span class="at">stat =</span> <span class="st">"mean"</span>){</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    stat__ <span class="ot">&lt;-</span> <span class="fu">get</span>(stat)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    df_names <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span>(item <span class="cf">in</span> <span class="fu">names</span>(bp_list)){</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>        df_names <span class="ot">&lt;-</span> <span class="fu">append</span>(df_names, item)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>        numeric_var_names <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        df_stats <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> (j <span class="cf">in</span> bp_list){</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>            numeric_var_names <span class="ot">&lt;-</span> <span class="fu">append</span>(numeric_var_names,(<span class="fu">names</span>(j)[<span class="fu">sapply</span>(j,is.numeric)]))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>            df_stats <span class="ot">&lt;-</span> <span class="fu">append</span>(df_stats, <span class="fu">list</span>(<span class="fu">stat__</span>(j<span class="sc">$</span>pre_bp), <span class="fu">stat__</span>(j<span class="sc">$</span>post_bp), <span class="fu">stat__</span>(j<span class="sc">$</span>diff_bp)))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        }</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    } </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(<span class="fu">list</span>(df_names, numeric_var_names, df_stats))</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>dfnamestst <span class="ot">&lt;-</span> <span class="fu">get_df_names</span>(bp_list)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tst_max<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list,<span class="st">"max"</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_max)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  max_pre_bp max_post_bp max_diff_bp
-1        151         146          21
-
-$placebo
-  max_pre_bp max_post_bp max_diff_bp
-1        152         143          33</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>tst_var<span class="ot">&lt;-</span><span class="fu">calculate_stats</span>(bp_list,<span class="st">"var"</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(tst_var)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$treatment
-  var_pre_bp var_post_bp var_diff_bp
-1   75.72632    78.99737    117.8184
-
-$placebo
-  var_pre_bp var_post_bp var_diff_bp
-1   149.8778    124.9889    341.3333</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co">#Manual checks</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># bp_list_chk &lt;- bp_list[["treatment"]]</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$pre_bp)</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$post_bp)</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$diff_bp)</span></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># bp_list_chk &lt;- bp_list[["placebo"]]</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$pre_bp)</span></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$post_bp)</span></span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a><span class="co"># mean(bp_list_chk$diff_bp)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
+<p>Add a new chunk by clicking the <em>Insert Chunk</em> button on the toolbar or by pressing <em>Cmd+Option+I</em>.</p>
+<p>When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the <em>Preview</em> button or press <em>Cmd+Shift+K</em> to preview the HTML file).</p>
+<p>The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike <em>Knit</em>, <em>Preview</em> does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.</p>
 
 
 </section>
