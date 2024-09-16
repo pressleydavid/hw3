@@ -104,13 +104,6 @@ calculate_stats <- function(bp_list, stat = "mean") {
     # return list of data frames
     return(sumstats)
 }
-tst_mean_def<-calculate_stats(bp_list)
-tst_mean_named<-calculate_stats(bp_list,"mean")
-tst_sd<-calculate_stats(bp_list,"sd")
-tst_min<-calculate_stats(bp_list,"min")
-tst_max<-calculate_stats(bp_list,"max")
-tst_var<-calculate_stats(bp_list,"var")
-
 
 #Manual checks
 # bp_list_chk <- bp_list[["treatment"]]
@@ -122,5 +115,32 @@ tst_var<-calculate_stats(bp_list,"var")
 # mean(bp_list_chk$pre_bp)
 # mean(bp_list_chk$post_bp)
 # mean(bp_list_chk$diff_bp)
+```
+
+## Checks
+
+### Mean (Default)
+```{r}
+calculate_stats(bp_list)
+```
+
+### Standard Deviation 
+```{r}
+calculate_stats(bp_list,"sd")
+```
+
+### Minimums
+```{r}
+calculate_stats(bp_list,"min")
+```
+
+### Maximums
+```{r}
+calculate_stats(bp_list,"max")
+```
+
+### Variance
+```{r}
+calculate_stats(bp_list,"var")
 ```
 
